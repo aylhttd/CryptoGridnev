@@ -13,7 +13,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 using namespace std;
 
 char fixed_tolower(char c) {
@@ -55,37 +54,13 @@ void MainWindow::on_pushButton_clicked()
 
     auto qs_ = regex_and_tolower(qs_1); //erase all trash including spaces, make all letters low
 
-
     ui->textBrowser->append("Всего символов: " + QString::number(qs_.length()) + "\n");
-
 
     //podshet bukv//
     map <QString, int> count_of_edinichnie_bukvi = {};
 
     for(auto obj : this->_bukvi)
         count_of_edinichnie_bukvi.insert(make_pair(obj, qs_.count(obj)));
-    //podshet bukv//
-
-
-
-    //sasha, tut podshet bigramm
-    map <QString, int> count_of_bigramms = {};
-    vector<QString> used_letters;
-
-    for (auto x : count_of_edinichnie_bukvi)
-        if (x.second != 0)
-            used_letters.push_back(x.first);
-    for (auto i : used_letters)
-        for (auto j : used_letters){
-            QString _key = i+j;
-            count_of_bigramms[_key] = 0;
-        }
-    for (auto x : count_of_bigramms) {
-        int counter = 0;
-        QString f = x.first;
-        counter = qs_.count(f);
-        count_of_bigramms[f] = counter;
-    }
 
     int counter_of_GS_bigramms = 0;
     int counter_of_SG_bigramms = 0;
@@ -97,58 +72,81 @@ void MainWindow::on_pushButton_clicked()
     map <QString, int> map_of_SS_bigramms = {};
     map <QString, int> map_of_GG_bigramms = {};
 
-    for (auto x : count_of_bigramms) {
-        QString _key = x.first;
-        QString _frst = _key.mid(0,1);
-        QString _scnd = _key.mid(1,1);
+    //podshet bigram
+    for(int i = 0; i < this->_glasnie.size(); ++i)
+        for(int j = 0; j < this->_glasnie.size(); ++j)
+            map_of_GG_bigramms.insert(make_pair(_glasnie[i] + _glasnie[j], qs_.count(_glasnie[i] + _glasnie[j])));
 
-        for (auto y : _glasnie)
-            if (_frst == y)
-                for (auto z : _soglasnie) {
-                    if (_scnd == z){
-                        counter_of_GS_bigramms += x.second;
-                        map_of_GS_bigramms.insert(x);
-                    }
-                }
+    for(int i = 0; i < this->_soglasnie.size(); ++i)
+        for(int j = 0; j < this->_soglasnie.size(); ++j)
+            map_of_SS_bigramms.insert(make_pair(_soglasnie[i] + _soglasnie[j], qs_.count(_soglasnie[i] + _soglasnie[j])));
 
-        for (auto y : _soglasnie)
-            if (_frst == y)
-                for (auto z : _glasnie) {
-                    if (_scnd == z) {
-                        counter_of_SG_bigramms += x.second;
-                        map_of_SG_bigramms.insert(x);
-                }
-                }
+    for(int i = 0; i < this->_glasnie.size(); ++i)
+        for(int j = 0; j < this->_soglasnie.size(); ++j)
+            map_of_GS_bigramms.insert(make_pair(_glasnie[i] + _soglasnie[j], qs_.count(_glasnie[i] + _soglasnie[j])));
 
-        for (auto y : _glasnie)
-            if (_frst == y)
-                for (auto z : _glasnie) {
-                    if (_scnd == z) {
-                        counter_of_GG_bigramms += x.second;
-                        map_of_GG_bigramms.insert(x);
-                    }
-                }
+    for(int i = 0; i < this->_soglasnie.size(); ++i)
+        for(int j = 0; j < this->_glasnie.size(); ++j)
+            map_of_SG_bigramms.insert(make_pair(_soglasnie[i] + _glasnie[j], qs_.count(_soglasnie[i] + _glasnie[j])));
 
-        for (auto y : _soglasnie)
-            if (_frst == y)
-                for (auto z : _soglasnie) {
-                    if (_scnd == z) {
-                        counter_of_SS_bigramms += x.second;
-                        map_of_SS_bigramms.insert(x);
-                    }
-                }
+    //Udalenie nuley i podshet
+    for(auto pos = map_of_GG_bigramms.begin(); pos != map_of_GG_bigramms.end();)
+      if(pos->second == 0)
+        pos = map_of_GG_bigramms.erase(pos);
+      else{
+        counter_of_GG_bigramms += pos->second;
+        ++pos;
+      }
 
-    }
+    for(auto pos = map_of_SS_bigramms.begin(); pos != map_of_SS_bigramms.end();)
+      if(pos->second == 0)
+        pos = map_of_SS_bigramms.erase(pos);
+      else{
+        counter_of_SS_bigramms += pos->second;
+        ++pos;
+      }
 
+    for(auto pos = map_of_GS_bigramms.begin(); pos != map_of_GS_bigramms.end();)
+      if(pos->second == 0)
+        pos = map_of_GS_bigramms.erase(pos);
+      else{
+        counter_of_GS_bigramms += pos->second;
+        ++pos;
+      }
 
-/////// CHECK LOGIC ONCE AGAIN, DELETE 0-value pairs from maps
+    for(auto pos = map_of_SG_bigramms.begin(); pos != map_of_SG_bigramms.end();)
+      if(pos->second == 0)
+        pos = map_of_SG_bigramms.erase(pos);
+      else{
+        counter_of_SG_bigramms += pos->second;
+        ++pos;
+      }
 
-    /////////////////////////////////////
-
-
-
-    //vivod
+    ui->textBrowser->append("ВСЕГО " + QString::number(qs_.size()) + "Символов,\n" + "ВСЕГО ГС Биграмм " + QString::number(counter_of_GS_bigramms) + "\nВСЕГО СГ Биграмм " + QString::number(counter_of_SG_bigramms) + "\n");
+    ui->textBrowser->append("ВСЕГО СС Биграмм " + QString::number(counter_of_SS_bigramms) + "\nВСЕГО ГГ Биграмм " + QString::number(counter_of_GG_bigramms) + "\n");
+    //vivod bukv
     for(auto obj : count_of_edinichnie_bukvi)
-        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений, \n"));
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений,"));
+
+    ui->textBrowser->append("\n\n\nВЫВОД БИГРАММ ГГ\n");
+
+    //vivod bigramm
+    for(auto obj : map_of_GG_bigramms)
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений,"));
+
+    ui->textBrowser->append("\n\n\nВЫВОД БИГРАММ СС\n");
+
+    for(auto obj : map_of_SS_bigramms)
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений,"));
+
+    ui->textBrowser->append("\n\n\nВЫВОД БИГРАММ СГ\n");
+
+    for(auto obj : map_of_SG_bigramms)
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений,"));
+
+    ui->textBrowser->append("\n\n\nВЫВОД БИГРАММ ГС\n");
+
+    for(auto obj : map_of_GS_bigramms)
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений,"));
 
 }
