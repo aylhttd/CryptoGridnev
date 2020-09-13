@@ -13,68 +13,48 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-/*#include <iostream>
-#include <fstream>
-#include <regex>
-#include <list>
-#include <algorithm>
-#include <cstring>
-#include <locale>
 
 using namespace std;
 
-int main() {
-	setlocale(LC_ALL, "Russian");
+char fixed_tolower(char c) {
+    return tolower((unsigned char)c);
+}
 
-	std::ifstream _input("text.txt");
-	std::ofstream _output("RESULTOFPARSE.txt");
-	int count = 1;
-	int helper = 1;
-	int size = 0;
-	int tmp;
-	regex no_letters("[^А-Яа-я -]");
-	regex spaces(" {2,}");
-	regex defis("\ -[а-яА-Я]");
-	regex post_defis("\-");
-	regex un_defis("\- |\ -");
-	regex yo("\[Ёё]");
-	string replacement = " ";
-	string nothing = "";
-	std::string untext;
-	if (_input.is_open()) {
-		while (!_input.eof()) {
-			tmp = _input.get();
-			untext.push_back(tmp);
-			size++;
-		}
-	}
+QString regex_and_tolower(QString _text) {
 
-	string temp6 = regex_replace(untext, yo, "е");
-	string temp = regex_replace(temp6, no_letters, nothing);
-	string temp5 = regex_replace(temp, post_defis, nothing);
+    setlocale(LC_ALL, "Russian");
 
+    QString untext = _text;
 
-	auto text = temp5;
+    QRegExp no_letters("[^А-Яа-я -]");
+    QRegExp spaces(" {1,}");
+    QRegExp defis("\ -[а-яА-Я]");
+    QRegExp post_defis("\-");
+    QRegExp un_defis("\- |\ -");
+    QRegExp yo("\[Ёё]");
 
-	transform(text.begin(), text.end(), text.begin(), tolower);;
-	if (text[0] == ' ')
-		text.erase(0, 1);
-	text.pop_back();
-	if (text[text.size() - 1] != ' ')
-		text.push_back(' ');
-	_output << text;
+    QString replacement = " ";
+    QString nothing = "";
 
-	temp6.clear();
-	temp5.clear();
-	temp.clear();
-	text.clear();
-}*/
+    untext.replace(yo, "е");
+    untext.replace(no_letters, nothing);
+    untext.replace(post_defis, nothing);
+    untext.replace(spaces, nothing);
+
+    auto text = untext;
+    text = text.toLower();
+
+    untext.clear();
+
+    return text;
+}
 
 void MainWindow::on_pushButton_clicked()
 {
-    QString qs_ = ui->textEdit->toPlainText();  //v etom QString text dlya analiza
+    QString qs_1 = ui->textEdit->toPlainText();  //v etom QString text dlya analiza
 
-    //a tut dobav' regex
+    auto qs_ = regex_and_tolower(qs_1); //erase all trash including spaces, make all letters low
+
 
     ui->textBrowser->append("Всего символов: " + QString::number(qs_.length()) + "\n");
 
