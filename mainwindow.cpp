@@ -68,7 +68,7 @@ void MainWindow::on_pushButton_clicked()
 
 
 
-    //ыфырa, tut podshet bigramm
+    //sasha, tut podshet bigramm
     map <QString, int> count_of_bigramms = {};
     vector<QString> used_letters;
 
