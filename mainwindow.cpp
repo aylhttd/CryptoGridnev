@@ -87,6 +87,61 @@ void MainWindow::on_pushButton_clicked()
         count_of_bigramms[f] = counter;
     }
 
+    int counter_of_GS_bigramms = 0;
+    int counter_of_SG_bigramms = 0;
+    int counter_of_SS_bigramms = 0;
+    int counter_of_GG_bigramms = 0;
+
+    map <QString, int> map_of_GS_bigramms = {};
+    map <QString, int> map_of_SG_bigramms = {};
+    map <QString, int> map_of_SS_bigramms = {};
+    map <QString, int> map_of_GG_bigramms = {};
+
+    for (auto x : count_of_bigramms) {
+        QString _key = x.first;
+        QString _frst = _key.mid(0,1);
+        QString _scnd = _key.mid(1,1);
+
+        for (auto y : _glasnie)
+            if (_frst == y)
+                for (auto z : _soglasnie) {
+                    if (_scnd == z){
+                        counter_of_GS_bigramms += x.second;
+                        map_of_GS_bigramms.insert(x);
+                    }
+                }
+
+        for (auto y : _soglasnie)
+            if (_frst == y)
+                for (auto z : _glasnie) {
+                    if (_scnd == z) {
+                        counter_of_SG_bigramms += x.second;
+                        map_of_SG_bigramms.insert(x);
+                }
+                }
+
+        for (auto y : _glasnie)
+            if (_frst == y)
+                for (auto z : _glasnie) {
+                    if (_scnd == z) {
+                        counter_of_GG_bigramms += x.second;
+                        map_of_GG_bigramms.insert(x);
+                    }
+                }
+
+        for (auto y : _soglasnie)
+            if (_frst == y)
+                for (auto z : _soglasnie) {
+                    if (_scnd == z) {
+                        counter_of_SS_bigramms += x.second;
+                        map_of_SS_bigramms.insert(x);
+                    }
+                }
+
+    }
+
+
+/////// CHECK LOGIC ONCE AGAIN, DELETE 0-value pairs from maps
 
     /////////////////////////////////////
 
