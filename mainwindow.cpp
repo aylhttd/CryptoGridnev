@@ -68,7 +68,25 @@ void MainWindow::on_pushButton_clicked()
 
 
 
-    //dima, tut podshet i vivod bigramm
+    //ыфырa, tut podshet bigramm
+    map <QString, int> count_of_bigramms = {};
+    vector<QString> used_letters;
+
+    for (auto x : count_of_edinichnie_bukvi)
+        if (x.second != 0)
+            used_letters.push_back(x.first);
+    for (auto i : used_letters)
+        for (auto j : used_letters){
+            QString _key = i+j;
+            count_of_bigramms[_key] = 0;
+        }
+    for (auto x : count_of_bigramms) {
+        int counter = 0;
+        QString f = x.first;
+        counter = qs_.count(f);
+        count_of_bigramms[f] = counter;
+    }
+
 
     /////////////////////////////////////
 
