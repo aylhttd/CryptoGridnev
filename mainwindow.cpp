@@ -89,6 +89,14 @@ void MainWindow::on_pushButton_clicked()
         for(int j = 0; j < this->_glasnie.size(); ++j)
             map_of_SG_bigramms.insert(make_pair(_soglasnie[i] + _glasnie[j], qs_.count(_soglasnie[i] + _glasnie[j])));
 
+    //poisk 4-gramm
+    map <QString, int> map_of_4gramms = {};
+    for(int i = 0;  (i + 3) < qs_.size(); ++i){
+        auto _4gramm = QString(qs_.at(i)) + QString(qs_.at(i + 1)) + QString(qs_.at(i + 2)) + QString(qs_.at(i + 3));
+        map_of_4gramms.insert(make_pair(_4gramm, qs_.count(_4gramm)));
+    }
+
+
     //Udalenie nuley i podshet
     for(auto pos = map_of_GG_bigramms.begin(); pos != map_of_GG_bigramms.end();)
       if(pos->second == 0)
@@ -97,6 +105,12 @@ void MainWindow::on_pushButton_clicked()
         counter_of_GG_bigramms += pos->second;
         ++pos;
       }
+
+    for(auto pos = map_of_4gramms.begin(); pos != map_of_4gramms.end();)
+      if(pos->second == 0)
+        pos = map_of_4gramms.erase(pos);
+      else
+        ++pos;
 
     for(auto pos = map_of_SS_bigramms.begin(); pos != map_of_SS_bigramms.end();)
       if(pos->second == 0)
@@ -122,31 +136,37 @@ void MainWindow::on_pushButton_clicked()
         ++pos;
       }
 
-    ui->textBrowser->append("ВСЕГО " + QString::number(qs_.size()) + "Символов,\n" + "ВСЕГО ГС Биграмм " + QString::number(counter_of_GS_bigramms) + "\nВСЕГО СГ Биграмм " + QString::number(counter_of_SG_bigramms) + "\n");
+    ui->textBrowser->append("ВСЕГО " + QString::number(qs_.size()) + " Символов,\n" + "ВСЕГО ГС Биграмм " + QString::number(counter_of_GS_bigramms) + "\nВСЕГО СГ Биграмм " + QString::number(counter_of_SG_bigramms) + "\n");
     ui->textBrowser->append("ВСЕГО СС Биграмм " + QString::number(counter_of_SS_bigramms) + "\nВСЕГО ГГ Биграмм " + QString::number(counter_of_GG_bigramms) + "\n");
     //vivod bukv
     for(auto obj : count_of_edinichnie_bukvi)
-        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений,"));
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений"));
 
     ui->textBrowser->append("\n\n\nВЫВОД БИГРАММ ГГ\n");
 
     //vivod bigramm
     for(auto obj : map_of_GG_bigramms)
-        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений,"));
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений"));
 
     ui->textBrowser->append("\n\n\nВЫВОД БИГРАММ СС\n");
 
     for(auto obj : map_of_SS_bigramms)
-        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений,"));
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений"));
 
     ui->textBrowser->append("\n\n\nВЫВОД БИГРАММ СГ\n");
 
     for(auto obj : map_of_SG_bigramms)
-        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений,"));
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений"));
 
     ui->textBrowser->append("\n\n\nВЫВОД БИГРАММ ГС\n");
 
     for(auto obj : map_of_GS_bigramms)
-        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений,"));
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений"));
+
+    ui->textBrowser->append("\n\n\nВЫВОД 4 ГРАММ ГС\n");
+
+    for( auto obj : map_of_4gramms)
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений"));
+
 
 }
