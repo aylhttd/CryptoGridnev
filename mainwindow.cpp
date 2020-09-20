@@ -96,6 +96,13 @@ void MainWindow::on_pushButton_clicked()
         map_of_4gramms.insert(make_pair(_4gramm, qs_.count(_4gramm)));
     }
 
+    //poisk 3-gramm
+    map <QString, int> map_of_3gramms = {};
+    for(int i = 0;  (i + 2) < qs_.size(); ++i){
+        auto _3gramm = QString(qs_.at(i)) + QString(qs_.at(i + 1)) + QString(qs_.at(i + 2));
+        map_of_3gramms.insert(make_pair(_3gramm, qs_.count(_3gramm)));
+    }
+
 
     //Udalenie nuley i podshet
     for(auto pos = map_of_GG_bigramms.begin(); pos != map_of_GG_bigramms.end();)
@@ -166,6 +173,11 @@ void MainWindow::on_pushButton_clicked()
     ui->textBrowser->append("\n\n\nВЫВОД 4 ГРАММ ГС\n");
 
     for( auto obj : map_of_4gramms)
+        ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений"));
+
+    ui->textBrowser->append("\n\n\nВЫВОД 3 ГРАММ ГС\n");
+
+    for( auto obj : map_of_3gramms)
         ui->textBrowser->append(obj.first + QString::fromStdString(" " + to_string(obj.second) + " вхождений"));
 
 
